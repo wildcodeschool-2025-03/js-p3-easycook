@@ -49,7 +49,7 @@ function MemberRegisteredList() {
   );
 
   return (
-    <section className="space-y-10 mt-8">
+    <section className="grid gap-10 mt-8 lg:grid-cols-3">
       {Object.entries(lists).length > 0 ? (
         Object.entries(lists).map(([listId, recipes]) => {
           const created = recipes[0].date_creation;

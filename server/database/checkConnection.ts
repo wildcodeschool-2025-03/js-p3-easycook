@@ -2,7 +2,7 @@ import client from "./client";
 
 // Try to get a connection to the database
 client
-  .getConnection()
+  .connect()
   .then((connection) => {
     console.info(`Using database ${process.env.DB_NAME}`);
 

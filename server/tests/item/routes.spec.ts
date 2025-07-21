@@ -1,219 +1,236 @@
-// Import the supertest library for making HTTP requests
+import bcrypt from "bcryptjs";
+import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
+import type { QueryResult, QueryResultRow } from "pg";
 import supertest from "supertest";
-
-// Import the Express application
-import app from "../../src/app";
-
-// Import databaseClient
+import type {
+  Member,
+  TypeCategory,
+  TypeDiet,
+  TypeRecipe,
+  TypeUnity,
+} from "../../../client/src/types/TypeFiles";
 import databaseClient from "../../database/client";
+import app from "../../src/app";
+dotenv.config();
 
-import type { Result, Rows } from "../../database/client";
+// 200 : succès de la requête ;
+// 201 : Creation reussis;
+// 301 et 302 : redirection, respectivement permanente et temporaire ;
+// 401 : utilisateur non authentifié ;
+// 403 : accès refusé ;
+// 404 : ressource non trouvée ;
+// 500, 502 et 503 : erreurs serveur ;
+// 504 : le serveur n'a pas répondu.
 
-// Restore all mocked functions after each test
 afterEach(() => {
   jest.restoreAllMocks();
 });
 
-// Test suite for the GET /api/items route
-describe("GET /api/items", () => {
-  it("should fetch items successfully", async () => {
-    // Mock empty rows returned from the database
-    const rows = [] as Rows;
+//
+//  pour mocker databaseClient.query
 
-    // Mock the implementation of the database query method
-    jest
-      .spyOn(databaseClient, "query")
-      .mockImplementation(async () => [rows, []]);
+function mockQuery<T extends QueryResultRow>(rows: T[]) {
+  jest
+    .spyOn(databaseClient, "query")
+    .mockImplementation(async () => ({ rows }) as QueryResult<T>);
+}
 
-    // Send a GET request to the /api/items endpoint
-    const response = await supertest(app).get("/api/items");
+// Test Time ! //
 
-    // Assertions
-    expect(response.status).toBe(200);
-    expect(response.body).toStrictEqual(rows);
+describe("GET Routes publique", () => {
+  it("Devrait nous montrer toutes les unités", async () => {
+    const rows: TypeUnity[] = [];
+    mockQuery(rows);
+    const res = await supertest(app).get("/api/unity");
+    expect(res.status).toBe(200);
+    expect(res.body).toStrictEqual(rows);
+  });
+
+  it("Devrait nous montrer toute les Diet", async () => {
+    const rows: TypeDiet[] = [];
+    mockQuery(rows);
+    const res = await supertest(app).get("/api/diet");
+    expect(res.status).toBe(200);
+    expect(res.body).toStrictEqual(rows);
+  });
+
+  it("Devrait nous montrer toute les categories", async () => {
+    const rows: TypeCategory[] = [];
+    mockQuery(rows);
+    const res = await supertest(app).get("/api/category");
+    expect(res.status).toBe(200);
+    expect(res.body).toStrictEqual(rows);
+  });
+
+  it("Devrait nous montrer recettes aléatoire", async () => {
+    const rows: TypeRecipe[] = [];
+    mockQuery(rows);
+    const res = await supertest(app).get("/api/recipe/random");
+    expect(res.status).toBe(200);
+    expect(res.body).toStrictEqual(rows);
+  });
+
+  it("Devrait nous montrer toutes les recettes", async () => {
+    const rows: TypeRecipe[] = [];
+    mockQuery(rows);
+    const res = await supertest(app).get("/api/recipe");
+    expect(res.status).toBe(200);
+    expect(res.body).toStrictEqual(rows);
+  });
+
+  it("Devrait nous montrer le détail d’une recette", async () => {
+    const rows: TypeRecipe[] = [{ id: 17, name: "Crêpes Rapides", rate: 0 }];
+    mockQuery(rows);
+    const res = await supertest(app).get("/api/recipe/detail/17");
+    expect(res.status).toBe(200);
+    expect(res.body).toStrictEqual(rows[0]);
+  });
+
+  it("Devrait faire la recherche par mot-clé", async () => {
+    const rows: TypeRecipe[] = [{ id: 17, name: "Crêpes Rapides", rate: 0 }];
+    mockQuery(rows);
+    const res = await supertest(app).get("/api/recipe/search/17");
+    expect(res.status).toBe(200);
+    expect(res.body).toStrictEqual(rows);
+  });
+
+  it("Devrait filtrer par catégorie", async () => {
+    const rows: TypeRecipe[] = [{ id: 2, name: "Petit déjeuner", rate: 0 }];
+    mockQuery(rows);
+    const res = await supertest(app).get("/api/recipe/category/2");
+    expect(res.status).toBe(200);
+    expect(res.body).toStrictEqual(rows);
+  });
+
+  it("Devrait filtrer par régime", async () => {
+    const rows: TypeRecipe[] = [{ id: 4, name: "Vegan", rate: 0 }];
+    mockQuery(rows);
+    const res = await supertest(app).get("/api/recipe/diet/4");
+    expect(res.status).toBe(200);
+    expect(res.body).toStrictEqual(rows);
+  });
+
+  it("Devrait filtrer par temps", async () => {
+    const rows: TypeRecipe[] = [{ id: 17, name: "Crêpes Rapides", rate: 0 }];
+    mockQuery(rows);
+    const res = await supertest(app).get("/api/recipe/time/17");
+    expect(res.status).toBe(200);
+    expect(res.body).toStrictEqual(rows);
+  });
+
+  it("Devrait filtrer par difficulté", async () => {
+    const rows: TypeRecipe[] = [{ id: 5, name: "Riz", rate: 0 }];
+    mockQuery(rows);
+    const res = await supertest(app).get("/api/recipe/difficulty/5");
+    expect(res.status).toBe(200);
+    expect(res.body).toStrictEqual(rows);
+  });
+
+  it("Devrait nous montrer les catégories pour l’accueil", async () => {
+    const rows: TypeRecipe[] = [];
+    mockQuery(rows);
+    const res = await supertest(app).get("/api/accueil/category");
+    expect(res.status).toBe(200);
+    expect(res.body).toStrictEqual(rows);
   });
 });
 
-// Test suite for the GET /api/items/:id route
-describe("GET /api/items/:id", () => {
-  it("should fetch a single item successfully", async () => {
-    // Mock rows returned from the database
-    const rows = [{}] as Rows;
+describe("PATCH /api/member", () => {
+  it("Devrait modifier le profile du Membre", async () => {
+    const hashedPassword = bcrypt.hashSync("123", 8);
 
-    // Mock the implementation of the database query method
-    jest
-      .spyOn(databaseClient, "query")
-      .mockImplementation(async () => [rows, []]);
+    const dbMember = {
+      id: 192,
+      name: "Jean",
+      email: "jeannot@example.com",
+      password: hashedPassword,
+      admin: false,
+    };
 
-    // Send a GET request to the /api/items/:id endpoint
-    const response = await supertest(app).get("/api/items/1");
+    const updatedMember = {
+      id: 192,
+      name: "Jean",
+      email: "jeannot@example.com",
+      password: hashedPassword,
+      admin: false,
+    };
 
-    // Assertions
-    expect(response.status).toBe(200);
-    expect(response.body).toStrictEqual(rows[0]);
-  });
+    const token = jwt.sign(
+      { id: dbMember.id, admin: dbMember.admin },
+      process.env.JWT_SECRET as string,
+    );
 
-  it("should fail on invalid id", async () => {
-    // Mock empty rows returned from the database
-    const rows = [] as Rows;
+    mockQuery([dbMember]);
 
-    // Mock the implementation of the database query method
-    jest
-      .spyOn(databaseClient, "query")
-      .mockImplementation(async () => [rows, []]);
+    (jest.spyOn(databaseClient, "query") as jest.Mock).mockResolvedValueOnce({
+      rows: [dbMember],
+    } as QueryResult<Member>);
 
-    // Send a GET request to the /api/items/:id endpoint with an invalid ID
-    const response = await supertest(app).get("/api/items/0");
-
-    // Assertions
-    expect(response.status).toBe(404);
-    expect(response.body).toEqual({});
-  });
-});
-
-// Test suite for the POST /api/items route
-// Doesn't pass: maybe something to change in app config :/
-describe("POST /api/items", () => {
-  it("should add a new item successfully", async () => {
-    // Mock result of the database query
-    const result = { insertId: 1 } as Result;
-
-    // Mock the implementation of the database query method
-    jest
-      .spyOn(databaseClient, "query")
-      .mockImplementation(async () => [result, []]);
-
-    // Fake item data
-    const fakeItem = { title: "foo", user_id: 0 };
-
-    // Send a POST request to the /api/items endpoint with a test item
-    const response = await supertest(app).post("/api/items").send(fakeItem);
-
-    // Assertions
-    expect(response.status).toBe(201);
-    expect(response.body).toBeInstanceOf(Object);
-    expect(response.body.insertId).toBe(result.insertId);
-  });
-
-  it("should fail on invalid request body", async () => {
-    // Mock result of the database query
-    const result = { insertId: 1 } as Result;
-
-    // Mock the implementation of the database query method
-    jest
-      .spyOn(databaseClient, "query")
-      .mockImplementation(async () => [result, []]);
-
-    // Fake item data with missing user_id
-    const fakeItem = { title: "foo" };
-
-    // Send a POST request to the /api/items endpoint with a test item
-    const response = await supertest(app).post("/api/items").send(fakeItem);
-
-    // Assertions
-    expect(response.status).toBe(400);
-    expect(response.body).toEqual({});
+    const res = await supertest(app)
+      .patch("/api/member")
+      .set("Authorization", token)
+      .send({
+        id: 192,
+        name: "Jean",
+        email: "jeannot@example.com",
+        password: "123",
+        admin: false,
+      });
+    expect(res.status).toBe(200);
+    expect(res.body).toStrictEqual(updatedMember);
   });
 });
 
-// Test suite for the PUT /api/items/:id route
-// This route is not yet implemented :/
-describe("PUT /api/items/:id", () => {
-  it("should update an existing item successfully", async () => {
-    // Mock result of the database query
-    const result = { affectedRows: 1 } as Result;
+describe("DELETE /api/admin/208", () => {
+  it("Devrait Suprimer un Compte externe en temps qu'Admin", async () => {
+    const testMember = {
+      id: 192,
+      name: "Jean",
+      email: "jeannot@example.com",
+      password: bcrypt.hashSync("123", 8),
+      admin: true,
+    };
 
-    // Mock the implementation of the database query method
-    jest
-      .spyOn(databaseClient, "query")
-      .mockImplementation(async () => [result, []]);
+    const token = jwt.sign(
+      { id: testMember.id, admin: testMember.admin },
+      process.env.JWT_SECRET as string,
+    );
 
-    // Fake item data
-    const fakeItem = { title: "foo", user_id: 0 };
+    mockQuery([testMember]);
 
-    // Send a PUT request to the /api/items/:id endpoint with a test item
-    const response = await supertest(app).put("/api/items/42").send(fakeItem);
-
-    // Assertions
-    expect(response.status).toBe(204);
-    expect(response.body).toEqual({});
-  });
-
-  it("should fail on invalid request body", async () => {
-    // Mock result of the database query
-    const result = { affectedRows: 1 } as Result;
-
-    // Mock the implementation of the database query method
-    jest
-      .spyOn(databaseClient, "query")
-      .mockImplementation(async () => [result, []]);
-
-    // Fake item data with missing user_id
-    const fakeItem = { title: "foo" };
-
-    // Send a PUT request to the /api/items/:id endpoint with a test item
-    const response = await supertest(app).put("/api/items/42").send(fakeItem);
-
-    // Assertions
-    expect(response.status).toBe(400);
-    expect(response.body).toEqual({});
-  });
-
-  it("should fail on invalid id", async () => {
-    // Mock result of the database query
-    const result = { affectedRows: 0 } as Result;
-
-    // Mock the implementation of the database query method
-    jest
-      .spyOn(databaseClient, "query")
-      .mockImplementation(async () => [result, []]);
-
-    // Fake item data with missing user_id
-    const fakeItem = { title: "foo", user_id: 0 };
-
-    // Send a PUT request to the /api/items/:id endpoint with a test item
-    const response = await supertest(app).put("/api/items/43").send(fakeItem);
-
-    // Assertions
-    expect(response.status).toBe(404);
-    expect(response.body).toEqual({});
+    const res = await supertest(app)
+      .delete("/api/admin/208")
+      .set("Authorization", token);
+    expect(res.status).toBe(200);
   });
 });
 
-// Test suite for the DELETE /api/items/:id route
-// This route is not yet implemented :/
-describe("DELETE /api/items/:id", () => {
-  it("should delete an existing item successfully", async () => {
-    // Mock result of the database query
-    const result = { affectedRows: 1 } as Result;
+describe("POST /api/signup", () => {
+  it("Devrait créer un compte Membre", async () => {
+    const testMember = {
+      name: "Alice",
+      email: "alice@example.com",
+      password: "123",
+    };
 
-    // Mock the implementation of the database query method
-    jest
-      .spyOn(databaseClient, "query")
-      .mockImplementation(async () => [result, []]);
+    const hashPassword = bcrypt.hashSync("123", 8);
 
-    // Send a DELETE request to the /api/items/:id endpoint
-    const response = await supertest(app).delete("/api/items/42");
+    mockQuery([
+      {
+        id: 999,
+        name: testMember.name,
+        email: testMember.email,
+        password: hashPassword,
+        admin: false,
+      },
+    ]);
 
-    // Assertions
-    expect(response.status).toBe(204);
-    expect(response.body).toEqual({});
-  });
-
-  it("should fail on invalid id", async () => {
-    // Mock result of the database query
-    const result = { affectedRows: 0 } as Result;
-
-    // Mock the implementation of the database query method
-    jest
-      .spyOn(databaseClient, "query")
-      .mockImplementation(async () => [result, []]);
-
-    // Send a DELETE request to the /api/items/:id endpoint
-    const response = await supertest(app).delete("/api/items/43");
-
-    // Assertions
-    expect(response.status).toBe(404);
-    expect(response.body).toEqual({});
+    const res = await supertest(app).post("/api/signup").send(testMember);
+    expect(res.status).toBe(201);
+    expect(res.body.userId).toBe(999);
+    expect(res.body.isAdmin).toBe(false);
   });
 });
+
+supertest(app);

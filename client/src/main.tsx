@@ -7,8 +7,19 @@ import { RouterProvider, createBrowserRouter } from "react-router";
 
 // Import the main app component
 import App from "./App";
-
+import About from "./pages/About/About.tsx";
+import Account from "./pages/Account/Account.tsx";
+import Admin from "./pages/Admin/Admin.tsx";
+import Contact from "./pages/Contact/Contact.tsx";
 // Import additional components for new routes
+import Home from "./pages/Home/Home.tsx";
+import List from "./pages/List_Course/List.tsx";
+import Mentions from "./pages/Mentions/Mentions.tsx";
+import Mixer from "./pages/Mixer/Mixer.tsx";
+import NotFound from "./pages/NotFound.tsx";
+import Details from "./pages/RecipeDetails/Detail.tsx";
+import Recipe from "./pages/RecipeDetails/Recipe.tsx";
+// import MemberRegisteredList from "./pages/Account/MemberRegisteredList.tsx";
 // Try creating these components in the "pages" folder
 
 // import About from "./pages/About";
@@ -20,8 +31,51 @@ import App from "./App";
 // You can add more routes as you build out your app!
 const router = createBrowserRouter([
   {
-    path: "/", // The root path
-    element: <App />, // Renders the App component for the home page
+    element: <App />,
+    errorElement: <NotFound />,
+    children: [
+      {
+        index: true,
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/Recettes",
+        element: <Recipe />,
+      },
+      {
+        path: "/Details",
+        element: <Details />,
+      },
+      {
+        path: "/Courses",
+        element: <List />,
+      },
+      {
+        path: "/Compte",
+        element: <Account />,
+      },
+      {
+        path: "/Mentions_legales",
+        element: <Mentions />,
+      },
+      {
+        path: "/A_propos",
+        element: <About />,
+      },
+      {
+        path: "/Mixer",
+        element: <Mixer />,
+      },
+      {
+        path: "/Admin",
+        element: <Admin />,
+      },
+      {
+        path: "/Contact",
+        element: <Contact />,
+      },
+    ],
   },
   // Try adding a new route! For example, "/about" with an About component
 ]);

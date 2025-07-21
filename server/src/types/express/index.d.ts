@@ -1,14 +1,9 @@
-// to make the file a module and avoid the TypeScript error
-export type {};
-
+import type { TypeUser } from "../../../../client/src/types/TypeFiles";
 declare global {
   namespace Express {
-    export interface Request {
-      /* ************************************************************************* */
-      // Add your custom properties here, for example:
-      //
-      // user?: { ... }
-      /* ************************************************************************* */
+    interface Request {
+      user?: TypeUser;
+      userId?: number;
     }
   }
 }

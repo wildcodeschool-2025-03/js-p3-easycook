@@ -251,6 +251,19 @@ function Mixer() {
             )}
           </div>
         </div>
+        {isInMixer ? (
+          <img
+            onClick={() => setIsInMixer(false)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                setIsInMixer(false);
+              }
+            }}
+            className="w-50 h-50 mx-auto rounded-full border-2 border-primary hover:cursor-pointer"
+            src="/superLogo.jpg"
+            alt="super logo"
+          />
+        ) : null}
         {/* Grille tablette/desktop */}
         <div className="hidden sm:grid gap-6 justify-center sm:grid-cols-2 lg:grid-cols-3 px-4">
           {recipes.length === 0 ? (

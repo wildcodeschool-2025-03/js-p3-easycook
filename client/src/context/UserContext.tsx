@@ -23,9 +23,8 @@ interface UserContextValue {
   user: TypeUser;
   isAdmin: boolean;
   idUserOnline: number | null;
-  userOnline?: TypeUser; // Optional, can be undefined
+  userOnline?: TypeUser;
   isEasterEgg: boolean;
-  // setUserOnline: React.Dispatch<React.SetStateAction<string>>; // Commented out or remove if not used elsewhere
   setIsEasterEgg: React.Dispatch<React.SetStateAction<boolean>>;
   setIsConnected: React.Dispatch<React.SetStateAction<boolean>>;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
@@ -68,8 +67,6 @@ export function UserProvider({ children }: ContextInterface) {
       setIsConnected(false);
     }
   }, [isConnected]);
-
-  ////////////Fait pas attention à ça////////////////////
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {

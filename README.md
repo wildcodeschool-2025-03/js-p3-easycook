@@ -39,7 +39,8 @@ Il est pré-configuré avec un ensemble d'outils pour aider les étudiants à pr
 - **Concurrently** : Permet d'exécuter plusieurs commandes simultanément dans le même terminal.
 - **Vite** : Alternative à _Create-React-App_, offrant une expérience plus fluide avec moins d'outils.
 - **Biome** : Alternative à _ESlint_ et _Prettier_, assurant la qualité du code selon des règles choisies.
-- **Supertest** : Bibliothèque pour tester les serveurs HTTP en node.js.
+- **Supertest** : Bibliothèque pour tester les serveurs HTTP en node.js elle simule avec les "mock".
+- **Jest** : Moteur de test (il permet d'appliquer les test) .
 
 ## Table des Matières
 
@@ -295,11 +296,26 @@ declare global {
 - **Sécurité** :
   - Validez et échappez toujours les entrées des utilisateurs.
   - Utilisez HTTPS pour toutes les communications réseau.
-  - Stockez les mots de passe de manière sécurisée en utilisant des hash forts (ex : argon2).
-  - Revoyez et mettez à jour régulièrement les dépendances.
+  - Stockez les mots de passe de manière sécurisée en utilisant des hash forts (ex : Bcrypt).
+  - Revoyez et mettez à jour régulièrement les dépendances (npm outdated, npm update).
 
 - **Code** :
   - Suivez les principes SOLID pour une architecture de code propre et maintenable.
+Single Responsibility Principle (Responsabilité unique)
+→ Une fonction ou une classe ne doit faire qu’une seule chose. Si tu veux changer un truc, il n’y a qu’une seule raison de le faire. Ça évite le bazar dans le code.
+
+Open/Closed Principle (Ouvert/Fermé)
+→ Ton code doit pouvoir être amélioré sans tout casser ou changer ce qui marche déjà. Tu ajoutes des trucs sans toucher à ce qui existe.
+
+Liskov Substitution Principle (Substitution de Liskov)
+→ Si tu remplaces un objet par un autre qui hérite de lui, tout doit continuer à fonctionner normalement. Par exemple, si tu remplaces un vélo par un vélo électrique, tu dois toujours pouvoir pédaler.
+
+Interface Segregation Principle (Ségrégation des interfaces)
+→ Il vaut mieux avoir plein de petits menus pour chaque besoin plutôt qu’un gros menu avec trop d’options inutiles. Comme ça, chaque partie du code n’utilise que ce dont elle a besoin.
+
+Dependency Inversion Principle (Inversion des dépendances)
+→ Ton code doit dépendre d’idées générales (des plans), pas de détails précis. Ça rend ton code plus flexible et facile à modifier plus tard.
+
   - Utilisez TypeScript pour bénéficier de la vérification statique des types.
   - Adoptez un style de codage cohérent avec Biome.
   - Écrivez des tests pour toutes les fonctionnalités critiques.

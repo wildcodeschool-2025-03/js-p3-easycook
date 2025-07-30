@@ -20,9 +20,9 @@ function SignUp() {
               type="text"
               value={user.name}
               onChange={handleChange}
-              pattern="^[a-zA-ZÀ-ÿ\s'-]{2,64}$"
+              // pattern="^[a-zA-ZÀ-ÿ\s'-]{2,64}$"
               title="2-50 lettres, spaces, apostrophes or hyphens"
-              minLength={2}
+              // minLength={2}
               maxLength={64}
               className="w-full px-4 py-2 border border-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-secondary"
               required
@@ -40,7 +40,7 @@ function SignUp() {
               onChange={handleChange}
               className="w-full px-4 py-2 border border-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-secondary"
               type="email"
-              pattern="^[\w\-.]+@([\w-]+\.)+[\w-]{2,}$"
+              // pattern="^[\w\-.]+@([\w-]+\.)+[\w-]{2,}$"
               title="Insérez un Email valide"
               maxLength={100}
               required
@@ -58,9 +58,9 @@ function SignUp() {
               value={user.password}
               onChange={handleChange}
               className="w-full px-4 py-2 border text-secondary border-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-seconday"
-              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s<>']).{8,64}$"
+              // pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s<>']).{8,64}$"
               title="8-64 Lettres, au moin 1 Majuscule, 1 Minuscule, 1 numero, 1 character special"
-              minLength={8}
+              // minLength={8}
               maxLength={64}
               required
             />

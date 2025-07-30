@@ -1,6 +1,7 @@
 import { useUser } from "@/context/UserContext";
 import { useEffect, useState } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { toast } from "sonner";
 
 interface FavoriteType {
   recipe_id: number;
@@ -15,6 +16,7 @@ function MemberFavoriteList() {
   const { idUserOnline } = useUser();
   const [favorites, setFavorites] = useState<FavoriteType[]>([]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     fetch(
       `${import.meta.env.VITE_API_URL}/api/member/${idUserOnline}/favorite`,
@@ -37,10 +39,10 @@ function MemberFavoriteList() {
       .catch((err) => {
         console.error("Error fetching favorites:", err);
       });
-  }, [idUserOnline]);
+  }, [idUserOnline, favorites]);
 
   function handleToggleFavorite(recipeId: number, current: boolean) {
-    fetch(`${import.meta.env.VITE_API_URL}/api/favorite/recipe`, {
+    fetch(`${import.meta.env.VITE_API_URL}/api/member/favorite/recipe`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -63,6 +65,9 @@ function MemberFavoriteList() {
           ),
         );
       });
+    toast.success("Favori retiré", {
+      style: { background: "#452a00", color: "#fde9cc" },
+    });
   }
 
   return (
@@ -97,8 +102,14 @@ function MemberFavoriteList() {
                 handleToggleFavorite(fav.recipe_id, fav.is_favorite)
               }
               type="button"
+              className="flex items-center space-x-1 text-primary hover:text-red-500 transition-colors font-bold"
             >
-              {fav.is_favorite ? <FaHeart /> : <FaRegHeart />}
+              {fav.is_favorite ? (
+                <FaHeart size={20} color="red" />
+              ) : (
+                <FaRegHeart size={20} color="red" />
+              )}
+              ,
             </button>
           </div>
         </div>

@@ -11,7 +11,7 @@ import "./App.css";
 function App() {
   return (
     <UserProvider>
-      <Toaster richColors position="top-center" />
+      <Toaster richColors position="bottom-center" />
       <Header />
       <Banner />
       <Outlet />

@@ -9,7 +9,6 @@ import { RouterProvider, createBrowserRouter } from "react-router";
 import App from "./App";
 import About from "./pages/About/About.tsx";
 import Account from "./pages/Account/Account.tsx";
-import Admin from "./pages/Admin/Admin.tsx";
 import Contact from "./pages/Contact/Contact.tsx";
 // Import additional components for new routes
 import Home from "./pages/Home/Home.tsx";
@@ -66,10 +65,6 @@ const router = createBrowserRouter([
       {
         path: "/Mixer",
         element: <Mixer />,
-      },
-      {
-        path: "/Admin",
-        element: <Admin />,
       },
       {
         path: "/Contact",

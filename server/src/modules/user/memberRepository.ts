@@ -140,12 +140,13 @@ class userRepository {
       r.picture AS picture,
       lr.number_people AS number_persons,
       (
-        SELECT json_agg(json_build_object('name', i.name, 'quantity', ri.quantity))
+        SELECT json_agg(json_build_object('name', i.name, 'quantity', ri.quantity,'unity', u.value))
         FROM recip_ingredient ri
         JOIN ingredient i ON i.id = ri.ingredient_id
+        JOIN unity u ON u.id = ri.unity_id
         WHERE ri.recipe_id = r.id
       ) AS ingredients
-    FROM list l
+    FROM list l 
     JOIN list_recipe lr ON lr.list_id = l.id
     JOIN recipe r ON r.id = lr.recipe_id
     WHERE l.user_id = $1

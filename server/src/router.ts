@@ -1,22 +1,23 @@
 import express from "express";
-import security from "./modules/middleware/checkToken";
-import securityAdmin from "./modules/middleware/checkTokenAdmin";
-const router = express.Router();
+// import checkTokenAdmin from "./modules/middleware/checkTokenAdmin";
 import categoryActions from "./modules/category/categoryActions";
 import dietActions from "./modules/diet/dietActions";
 import ingredientActions from "./modules/ingredient/ingredientActions";
 import listActions from "./modules/list/listActions";
+import checkToken from "./modules/middleware/checkToken";
 import recipeActions from "./modules/recipe/recipeActions";
 import unityActions from "./modules/unity/unityActions";
 import memberActions from "./modules/user/memberActions";
 import ustensilActions from "./modules/ustensil/ustensilActions";
 
+const router = express.Router();
+
 /* ************************************************************************* */
 // Define Your API Routes Here
 /* ************************************************************************* */
 // Mur Middleware Securité-------------------------
-router.use("/api/member", security.checkToken); // middleware pour les routes membres
-router.use("/api/admin", securityAdmin.checkTokenAdmin); // middleware pour les routes admin
+router.use("/api/member", checkToken.checkToken); // middleware pour les routes membres
+router.use("/api/admin", checkToken.checkToken); // middleware pour les routes admin
 
 //Public Actions
 router.get("/api/unity", unityActions.browse);

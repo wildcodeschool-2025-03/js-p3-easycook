@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -74,12 +74,12 @@ export function LoginForm({
                     Valider
                   </button>
 
-                  <div className=" relative text-center text-sm ">
+                  {/* <div className=" relative text-center text-sm ">
                     <span className="bg-card text-muted-foreground relative z-10 px-2 text-secondary mb-1">
                       ---------- ou continuer avec ----------
                     </span>
-                  </div>
-                  <div className="grid grid-cols-3 gap-4 text-secondary ">
+                  </div> */}
+                  {/* <div className="grid grid-cols-3 gap-4 text-secondary ">
                     <Button type="button" className="w-full">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -119,7 +119,7 @@ export function LoginForm({
                       </svg>
                       <span className="sr-only">Login with Meta</span>
                     </Button>
-                  </div>
+                  </div> */}
                   <div className="text-center text-sm text-secondary">
                     Don&apos;t have an account?{" "}
                     <button
